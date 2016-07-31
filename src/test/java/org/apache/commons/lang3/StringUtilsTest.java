@@ -2045,6 +2045,183 @@ public class StringUtilsTest {
         assertEquals("ab.ef", StringUtils.abbreviateMiddle("abcdef", ".", 5));
     }
 
+    @Test
+    public void testTruncate_StringInt() {
+        assertNull(StringUtils.truncate(null, 12));
+        try {
+            StringUtils.truncate(null, -1);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate(null, -10);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate(null, Integer.MIN_VALUE);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        assertEquals("", StringUtils.truncate("", 10));
+        assertEquals("", StringUtils.truncate("", 10));
+        assertEquals("abc", StringUtils.truncate("abcdefghij", 3));
+        assertEquals("abcdef", StringUtils.truncate("abcdefghij", 6));
+        assertEquals("", StringUtils.truncate("abcdefghij", 0));
+        try {
+            StringUtils.truncate("abcdefghij", -1);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -100);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", Integer.MIN_VALUE);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        assertEquals("abcdefghij", StringUtils.truncate("abcdefghijklmno", 10));
+        assertEquals("abcdefghijklmno", StringUtils.truncate("abcdefghijklmno", Integer.MAX_VALUE));
+        assertEquals("abcde", StringUtils.truncate("abcdefghijklmno", 5));
+        assertEquals("abc", StringUtils.truncate("abcdefghijklmno", 3));
+    }
+
+    @Test
+    public void testTruncate_StringIntInt() {
+        assertNull(StringUtils.truncate(null, 0, 12));
+        try {
+            StringUtils.truncate(null, -1, 0);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate(null, -10, -4);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate(null, Integer.MIN_VALUE, Integer.MIN_VALUE);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        assertNull(StringUtils.truncate(null, 10, 12));
+        assertEquals("", StringUtils.truncate("", 0, 10));
+        assertEquals("", StringUtils.truncate("", 2, 10));
+        assertEquals("abc", StringUtils.truncate("abcdefghij", 0, 3));
+        assertEquals("fghij", StringUtils.truncate("abcdefghij", 5, 6));
+        assertEquals("", StringUtils.truncate("abcdefghij", 0, 0));
+        try {
+            StringUtils.truncate("abcdefghij", 0, -1);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", 0, -10);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", 0, -100);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", 1, -100);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", 0, Integer.MIN_VALUE);
+            fail("maxWith cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -1, 0);
+            fail("offset cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -10, 0);
+            fail("offset cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -100, 1);
+            fail("offset cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", Integer.MIN_VALUE, 0);
+            fail("offset cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -1, -1);
+            fail("offset cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -10, -10);
+            fail("offset cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", -100, -100);
+            fail("offset  cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        try {
+            StringUtils.truncate("abcdefghij", Integer.MIN_VALUE, Integer.MIN_VALUE);
+            fail("offset  cannot be negative");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        final String raspberry = "raspberry peach";
+        assertEquals("peach", StringUtils.truncate(raspberry, 10, 15));
+        assertEquals("abcdefghij", StringUtils.truncate("abcdefghijklmno", 0, 10));
+        assertEquals("abcdefghijklmno", StringUtils.truncate("abcdefghijklmno", 0, Integer.MAX_VALUE));
+        assertEquals("bcdefghijk", StringUtils.truncate("abcdefghijklmno", 1, 10));
+        assertEquals("cdefghijkl", StringUtils.truncate("abcdefghijklmno", 2, 10));
+        assertEquals("defghijklm", StringUtils.truncate("abcdefghijklmno", 3, 10));
+        assertEquals("efghijklmn", StringUtils.truncate("abcdefghijklmno", 4, 10));
+        assertEquals("fghijklmno", StringUtils.truncate("abcdefghijklmno", 5, 10));
+        assertEquals("fghij", StringUtils.truncate("abcdefghijklmno", 5, 5));
+        assertEquals("fgh", StringUtils.truncate("abcdefghijklmno", 5, 3));
+        assertEquals("klm", StringUtils.truncate("abcdefghijklmno", 10, 3));
+        assertEquals("klmno", StringUtils.truncate("abcdefghijklmno", 10, Integer.MAX_VALUE));
+        assertEquals("n", StringUtils.truncate("abcdefghijklmno", 13, 1));
+        assertEquals("no", StringUtils.truncate("abcdefghijklmno", 13, Integer.MAX_VALUE));
+        assertEquals("o", StringUtils.truncate("abcdefghijklmno", 14, 1));
+        assertEquals("o", StringUtils.truncate("abcdefghijklmno", 14, Integer.MAX_VALUE));
+        assertEquals("", StringUtils.truncate("abcdefghijklmno", 15, 1));
+        assertEquals("", StringUtils.truncate("abcdefghijklmno", 15, Integer.MAX_VALUE));
+        assertEquals("", StringUtils.truncate("abcdefghijklmno", Integer.MAX_VALUE, Integer.MAX_VALUE));
+    }
+
     //-----------------------------------------------------------------------
     @Test
     public void testDifference_StringString() {
@@ -2182,10 +2359,12 @@ public class StringUtilsTest {
         assertEquals(0.93d, StringUtils.getJaroWinklerDistance("frog", "fog"), 0.0d);
         assertEquals(0.0d, StringUtils.getJaroWinklerDistance("fly", "ant"), 0.0d);
         assertEquals(0.44d, StringUtils.getJaroWinklerDistance("elephant", "hippo"), 0.0d);
-        assertEquals(0.91d, StringUtils.getJaroWinklerDistance("ABC Corporation", "ABC Corp"), 0.0d);
-        assertEquals(0.93d, StringUtils.getJaroWinklerDistance("D N H Enterprises Inc", "D & H Enterprises, Inc."), 0.0d);
-        assertEquals(0.94d, StringUtils.getJaroWinklerDistance("My Gym Children's Fitness Center", "My Gym. Childrens Fitness"), 0.0d);
-        assertEquals(0.9d, StringUtils.getJaroWinklerDistance("PENNSYLVANIA", "PENNCISYLVNIA"), 0.0d);
+        assertEquals(0.84d, StringUtils.getJaroWinklerDistance("dwayne", "duane"), 0.0d);
+        assertEquals(0.93d, StringUtils.getJaroWinklerDistance("ABC Corporation", "ABC Corp"), 0.0d);
+        assertEquals(0.95d, StringUtils.getJaroWinklerDistance("D N H Enterprises Inc", "D & H Enterprises, Inc."), 0.0d);
+        assertEquals(0.92d, StringUtils.getJaroWinklerDistance("My Gym Children's Fitness Center", "My Gym. Childrens Fitness"), 0.0d);
+        assertEquals(0.88d, StringUtils.getJaroWinklerDistance("PENNSYLVANIA", "PENNCISYLVNIA"), 0.0d);
+        assertEquals(0.63d, StringUtils.getJaroWinklerDistance("Haus Ingeborg", "Ingeborg Esser"), 0.0d);
     }
 
     @Test(expected = IllegalArgumentException.class)

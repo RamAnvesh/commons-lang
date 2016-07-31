@@ -460,6 +460,120 @@ public class StringUtils {
         return str == null ? EMPTY : str.trim();
     }
 
+    /**
+     * <p>Truncates a String. This will turn
+     * "Now is the time for all good men" into "Now is the time for".</p>
+     *
+     * <p>Specifically:</p>
+     * <ul>
+     *   <li>If {@code str} is less than {@code maxWidth} characters
+     *       long, return it.</li>
+     *   <li>Else truncate it to {@code substring(str, 0, maxWidth)}.</li>
+     *   <li>If {@code maxWidth} is less than {@code 0}, throw an
+     *       {@code IllegalArgumentException}.</li>
+     *   <li>In no case will it return a String of length greater than
+     *       {@code maxWidth}.</li>
+     * </ul>
+     *
+     * <pre>
+     * StringUtils.truncate(null, 0)       = null
+     * StringUtils.truncate(null, 2)       = null
+     * StringUtils.truncate("", 4)         = ""
+     * StringUtils.truncate("abcdefg", 4)  = "abcd"
+     * StringUtils.truncate("abcdefg", 6)  = "abcdef"
+     * StringUtils.truncate("abcdefg", 7)  = "abcdefg"
+     * StringUtils.truncate("abcdefg", 8)  = "abcdefg"
+     * StringUtils.truncate("abcdefg", -1) = throws an IllegalArgumentException
+     * </pre>
+     *
+     * @param str  the String to truncate, may be null
+     * @param maxWidth  maximum length of result String, must be positive
+     * @return truncated String, {@code null} if null String input
+     * @since 3.5
+     */
+    public static String truncate(final String str, int maxWidth) {
+        return truncate(str, 0, maxWidth);
+    }
+
+    /**
+     * <p>Truncates a String. This will turn
+     * "Now is the time for all good men" into "is the time for all".</p>
+     *
+     * <p>Works like {@code truncate(String, int)}, but allows you to specify
+     * a "left edge" offset.
+     *
+     * <p>Specifically:</p>
+     * <ul>
+     *   <li>If {@code str} is less than {@code maxWidth} characters
+     *       long, return it.</li>
+     *   <li>Else truncate it to {@code substring(str, offset, maxWidth)}.</li>
+     *   <li>If {@code maxWidth} is less than {@code 0}, throw an
+     *       {@code IllegalArgumentException}.</li>
+     *   <li>If {@code offset} is less than {@code 0}, throw an
+     *       {@code IllegalArgumentException}.</li>
+     *   <li>In no case will it return a String of length greater than
+     *       {@code maxWidth}.</li>
+     * </ul>
+     *
+     * <pre>
+     * StringUtils.truncate(null, 0, 0) = null
+     * StringUtils.truncate(null, 2, 4) = null
+     * StringUtils.truncate("", 0, 10) = ""
+     * StringUtils.truncate("", 2, 10) = ""
+     * StringUtils.truncate("abcdefghij", 0, 3) = "abc"
+     * StringUtils.truncate("abcdefghij", 5, 6) = "fghij"
+     * StringUtils.truncate("raspberry peach", 10, 15) = "peach"
+     * StringUtils.truncate("abcdefghijklmno", 0, 10) = "abcdefghij"
+     * StringUtils.truncate("abcdefghijklmno", -1, 10) = throws an IllegalArgumentException
+     * StringUtils.truncate("abcdefghijklmno", Integer.MIN_VALUE, 10) = "abcdefghij"
+     * StringUtils.truncate("abcdefghijklmno", Integer.MIN_VALUE, Integer.MAX_VALUE) = "abcdefghijklmno"
+     * StringUtils.truncate("abcdefghijklmno", 0, Integer.MAX_VALUE) = "abcdefghijklmno"
+     * StringUtils.truncate("abcdefghijklmno", 1, 10) = "bcdefghijk"
+     * StringUtils.truncate("abcdefghijklmno", 2, 10) = "cdefghijkl"
+     * StringUtils.truncate("abcdefghijklmno", 3, 10) = "defghijklm"
+     * StringUtils.truncate("abcdefghijklmno", 4, 10) = "efghijklmn"
+     * StringUtils.truncate("abcdefghijklmno", 5, 10) = "fghijklmno"
+     * StringUtils.truncate("abcdefghijklmno", 5, 5) = "fghij"
+     * StringUtils.truncate("abcdefghijklmno", 5, 3) = "fgh"
+     * StringUtils.truncate("abcdefghijklmno", 10, 3) = "klm"
+     * StringUtils.truncate("abcdefghijklmno", 10, Integer.MAX_VALUE) = "klmno"
+     * StringUtils.truncate("abcdefghijklmno", 13, 1) = "n"
+     * StringUtils.truncate("abcdefghijklmno", 13, Integer.MAX_VALUE) = "no"
+     * StringUtils.truncate("abcdefghijklmno", 14, 1) = "o"
+     * StringUtils.truncate("abcdefghijklmno", 14, Integer.MAX_VALUE) = "o"
+     * StringUtils.truncate("abcdefghijklmno", 15, 1) = ""
+     * StringUtils.truncate("abcdefghijklmno", 15, Integer.MAX_VALUE) = ""
+     * StringUtils.truncate("abcdefghijklmno", Integer.MAX_VALUE, Integer.MAX_VALUE) = ""
+     * StringUtils.truncate("abcdefghij", 3, -1) = throws an IllegalArgumentException
+     * StringUtils.truncate("abcdefghij", -2, 4) = throws an IllegalArgumentException
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param offset  left edge of source String
+     * @param maxWidth  maximum length of result String, must be positive
+     * @return truncated String, {@code null} if null String input
+     * @since 3.5
+     */
+    public static String truncate(final String str, int offset, int maxWidth) {
+        if (offset < 0) {
+            throw new IllegalArgumentException("offset cannot be negative");
+        }
+        if (maxWidth < 0) {
+            throw new IllegalArgumentException("maxWith cannot be negative");
+        }
+        if (str == null) {
+            return null;
+        }
+        if (offset > str.length()) {
+            return EMPTY;
+        }
+        if (str.length() > maxWidth) {
+            int ix = offset + maxWidth > str.length() ? str.length() : offset + maxWidth;
+            return str.substring(offset, ix);
+        }
+        return str.substring(offset);
+    }
+
     // Stripping
     //-----------------------------------------------------------------------
     /**
@@ -1220,6 +1334,9 @@ public class StringUtils {
      * This method uses {@link String#indexOf(String)} if possible.</p>
      * <p><b>Note:</b> The code starts looking for a match at the start of the target,
      * incrementing the starting index by one after each successful match.</p>
+     * <p>The code increments the starting index by one,
+     * rather than by the length of the match string,
+     * so matches may overlap.</p>
      * <p>A {@code null} CharSequence will return {@code -1}.</p>
      *
      * <pre>
@@ -1269,6 +1386,7 @@ public class StringUtils {
     /**
      * <p>Finds the n-th index within a String, handling {@code null}.
      * This method uses {@link String#indexOf(String)} if possible.</p>
+     * <p>Note that matches may overlap<p>
      *
      * <p>A {@code null} CharSequence will return {@code -1}.</p>
      *
@@ -7387,12 +7505,14 @@ public class StringUtils {
      * insertion or substitution).</p>
      *
      * <p>The previous implementation of the Levenshtein distance algorithm
-     * was from <a href="http://www.merriampark.com/ld.htm">http://www.merriampark.com/ld.htm</a></p>
+     * was from <a href="https://web.archive.org/web/20120604192456/http://www.merriampark.com/ld.htm">
+     * https://web.archive.org/web/20120604192456/http://www.merriampark.com/ld.htm</a></p>
      *
      * <p>Chas Emerick has written an implementation in Java, which avoids an OutOfMemoryError
      * which can occur when my Java implementation is used with very large strings.<br>
      * This implementation of the Levenshtein distance algorithm
-     * is from <a href="http://www.merriampark.com/ldjava.htm">http://www.merriampark.com/ldjava.htm</a></p>
+     * is from <a href="https://web.archive.org/web/20120526085419/http://www.merriampark.com/ldjava.htm">
+     * https://web.archive.org/web/20120526085419/http://www.merriampark.com/ldjava.htm</a></p>
      *
      * <pre>
      * StringUtils.getLevenshteinDistance(null, *)             = IllegalArgumentException
@@ -7677,10 +7797,10 @@ public class StringUtils {
      * StringUtils.getJaroWinklerDistance("hippo", "elephant") = 0.44
      * StringUtils.getJaroWinklerDistance("hippo", "zzzzzzzz") = 0.0
      * StringUtils.getJaroWinklerDistance("hello", "hallo")    = 0.88
-     * StringUtils.getJaroWinklerDistance("ABC Corporation", "ABC Corp") = 0.91
-     * StringUtils.getJaroWinklerDistance("D N H Enterprises Inc", "D &amp; H Enterprises, Inc.") = 0.93
-     * StringUtils.getJaroWinklerDistance("My Gym Children's Fitness Center", "My Gym. Childrens Fitness") = 0.94
-     * StringUtils.getJaroWinklerDistance("PENNSYLVANIA", "PENNCISYLVNIA")    = 0.9
+     * StringUtils.getJaroWinklerDistance("ABC Corporation", "ABC Corp") = 0.93
+     * StringUtils.getJaroWinklerDistance("D N H Enterprises Inc", "D &amp; H Enterprises, Inc.") = 0.95
+     * StringUtils.getJaroWinklerDistance("My Gym Children's Fitness Center", "My Gym. Childrens Fitness") = 0.92
+     * StringUtils.getJaroWinklerDistance("PENNSYLVANIA", "PENNCISYLVNIA") = 0.88
      * </pre>
      *
      * @param first the first String, must not be null
@@ -7696,62 +7816,70 @@ public class StringUtils {
             throw new IllegalArgumentException("Strings must not be null");
         }
 
-        final double jaro = score(first,second);
-        final int cl = commonPrefixLength(first, second);
-        final double matchScore = Math.round((jaro + (DEFAULT_SCALING_FACTOR * cl * (1.0 - jaro))) *100.0)/100.0;
-
-        return  matchScore;
+        int[] mtp = matches(first, second);
+        double m = mtp[0];
+        if (m == 0) {
+            return 0D;
+        }
+        double j = ((m / first.length() + m / second.length() + (m - mtp[1]) / m)) / 3;
+        double jw = j < 0.7D ? j : j + Math.min(DEFAULT_SCALING_FACTOR, 1D / mtp[3]) * mtp[2] * (1D - j);
+        return Math.round(jw * 100.0D) / 100.0D;
     }
 
-    /**
-     * This method returns the Jaro-Winkler score for string matching.
-     * @param first the first string to be matched
-     * @param second the second string to be machted
-     * @return matching score without scaling factor impact
-     */
-    private static double score(final CharSequence first, final CharSequence second) {
-        String shorter;
-        String longer;
-
-        // Determine which String is longer.
+    private static int[] matches(final CharSequence first, final CharSequence second) {
+        CharSequence max, min;
         if (first.length() > second.length()) {
-            longer = first.toString().toLowerCase();
-            shorter = second.toString().toLowerCase();
+            max = first;
+            min = second;
         } else {
-            longer = second.toString().toLowerCase();
-            shorter = first.toString().toLowerCase();
+            max = second;
+            min = first;
         }
-
-        // Calculate the half length() distance of the shorter String.
-        final int halflength = shorter.length() / 2 + 1;
-
-        // Find the set of matching characters between the shorter and longer strings. Note that
-        // the set of matching characters may be different depending on the order of the strings.
-        final String m1 = getSetOfMatchingCharacterWithin(shorter, longer, halflength);
-        final String m2 = getSetOfMatchingCharacterWithin(longer, shorter, halflength);
-
-        // If one or both of the sets of common characters is empty, then
-        // there is no similarity between the two strings.
-        if (m1.length() == 0 || m2.length() == 0) {
-            return 0.0;
+        int range = Math.max(max.length() / 2 - 1, 0);
+        int[] matchIndexes = new int[min.length()];
+        Arrays.fill(matchIndexes, -1);
+        boolean[] matchFlags = new boolean[max.length()];
+        int matches = 0;
+        for (int mi = 0; mi < min.length(); mi++) {
+            char c1 = min.charAt(mi);
+            for (int xi = Math.max(mi - range, 0), xn = Math.min(mi + range + 1, max.length()); xi < xn; xi++) {
+                if (!matchFlags[xi] && c1 == max.charAt(xi)) {
+                    matchIndexes[mi] = xi;
+                    matchFlags[xi] = true;
+                    matches++;
+                    break;
+                }
+            }
         }
-
-        // If the set of common characters is not the same size, then
-        // there is no similarity between the two strings, either.
-        if (m1.length() != m2.length()) {
-            return 0.0;
+        char[] ms1 = new char[matches];
+        char[] ms2 = new char[matches];
+        for (int i = 0, si = 0; i < min.length(); i++) {
+            if (matchIndexes[i] != -1) {
+                ms1[si] = min.charAt(i);
+                si++;
+            }
         }
-
-        // Calculate the number of transposition between the two sets
-        // of common characters.
-        final int transpositions = transpositions(m1, m2);
-
-        // Calculate the distance.
-        final double dist =
-                (m1.length() / ((double)shorter.length()) +
-                        m2.length() / ((double)longer.length()) +
-                        (m1.length() - transpositions) / ((double)m1.length())) / 3.0;
-        return dist;
+        for (int i = 0, si = 0; i < max.length(); i++) {
+            if (matchFlags[i]) {
+                ms2[si] = max.charAt(i);
+                si++;
+            }
+        }
+        int transpositions = 0;
+        for (int mi = 0; mi < ms1.length; mi++) {
+            if (ms1[mi] != ms2[mi]) {
+                transpositions++;
+            }
+        }
+        int prefix = 0;
+        for (int mi = 0; mi < min.length(); mi++) {
+            if (first.charAt(mi) == second.charAt(mi)) {
+                prefix++;
+            } else {
+                break;
+            }
+        }
+        return new int[] { matches, transpositions / 2, prefix, max.length() };
     }
 
     /**
@@ -7833,67 +7961,6 @@ public class StringUtils {
         return score;
     }
 
-    /**
-     * Gets a set of matching characters between two strings.
-     *
-     * <p><Two characters from the first string and the second string are considered matching if the character's
-     * respective positions are no farther than the limit value.</p>
-     *
-     * @param first The first string.
-     * @param second The second string.
-     * @param limit The maximum distance to consider.
-     * @return A string contain the set of common characters.
-     */
-    private static String getSetOfMatchingCharacterWithin(final CharSequence first, final CharSequence second, final int limit) {
-        final StringBuilder common = new StringBuilder();
-        final StringBuilder copy = new StringBuilder(second);
-
-        for (int i = 0; i < first.length(); i++) {
-            final char ch = first.charAt(i);
-            boolean found = false;
-
-            // See if the character is within the limit positions away from the original position of that character.
-            for (int j = Math.max(0, i - limit); !found && j < Math.min(i + limit, second.length()); j++) {
-                if (copy.charAt(j) == ch) {
-                    found = true;
-                    common.append(ch);
-                    copy.setCharAt(j,'*');
-                }
-            }
-        }
-        return common.toString();
-    }
-
-    /**
-     * Calculates the number of transposition between two strings.
-     * @param first The first string.
-     * @param second The second string.
-     * @return The number of transposition between the two strings.
-     */
-    private static int transpositions(final CharSequence first, final CharSequence second) {
-        int transpositions = 0;
-        for (int i = 0; i < first.length(); i++) {
-            if (first.charAt(i) != second.charAt(i)) {
-                transpositions++;
-            }
-        }
-        return transpositions / 2;
-    }
-    
-    /**
-     * Calculates the number of characters from the beginning of the strings that match exactly one-to-one, 
-     * up to a maximum of four (4) characters.
-     * @param first The first string.
-     * @param second The second string.
-     * @return A number between 0 and 4.
-     */
-    private static int commonPrefixLength(final CharSequence first, final CharSequence second) {
-        final int result = getCommonPrefix(first.toString(), second.toString()).length();
-
-        // Limit the result to 4.
-        return result > 4 ? 4 : result;
-    }
-    
     // startsWith
     //-----------------------------------------------------------------------
 
@@ -7971,30 +8038,33 @@ public class StringUtils {
     }
 
     /**
-     * <p>Check if a CharSequence starts with any of an array of specified strings.</p>
+     * <p>Check if a CharSequence starts with any of the provided case-sensitive prefixes.</p>
      *
      * <pre>
      * StringUtils.startsWithAny(null, null)      = false
      * StringUtils.startsWithAny(null, new String[] {"abc"})  = false
      * StringUtils.startsWithAny("abcxyz", null)     = false
-     * StringUtils.startsWithAny("abcxyz", new String[] {""}) = false
+     * StringUtils.startsWithAny("abcxyz", new String[] {""}) = true
      * StringUtils.startsWithAny("abcxyz", new String[] {"abc"}) = true
      * StringUtils.startsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringUtils.startsWithAny("abcxyz", null, "xyz", "ABCX") = false
+     * StringUtils.startsWithAny("ABCXYZ", null, "xyz", "abc") = false
      * </pre>
      *
-     * @param string  the CharSequence to check, may be null
-     * @param searchStrings the CharSequences to find, may be null or empty
-     * @return {@code true} if the CharSequence starts with any of the the prefixes, case sensitive, or
-     *  both {@code null}
+     * @param sequence the CharSequence to check, may be null
+     * @param searchStrings the case-sensitive CharSequence prefixes, may be empty or contain {@code null}
+     * @see StringUtils#startsWith(CharSequence, CharSequence)
+     * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
+     *   the input {@code sequence} begins with any of the provided case-sensitive {@code searchStrings}.
      * @since 2.5
      * @since 3.0 Changed signature from startsWithAny(String, String[]) to startsWithAny(CharSequence, CharSequence...)
      */
-    public static boolean startsWithAny(final CharSequence string, final CharSequence... searchStrings) {
-        if (isEmpty(string) || ArrayUtils.isEmpty(searchStrings)) {
+    public static boolean startsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
+        if (isEmpty(sequence) || ArrayUtils.isEmpty(searchStrings)) {
             return false;
         }
         for (final CharSequence searchString : searchStrings) {
-            if (startsWith(string, searchString)) {
+            if (startsWith(sequence, searchString)) {
                 return true;
             }
         }
@@ -8017,6 +8087,7 @@ public class StringUtils {
      * StringUtils.endsWith("abcdef", "def") = true
      * StringUtils.endsWith("ABCDEF", "def") = false
      * StringUtils.endsWith("ABCDEF", "cde") = false
+     * StringUtils.endsWith("ABCDEF", "")    = true
      * </pre>
      *
      * @see java.lang.String#endsWith(String)
@@ -8153,7 +8224,7 @@ public class StringUtils {
     }
 
     /**
-     * <p>Check if a CharSequence ends with any of an array of specified strings.</p>
+     * <p>Check if a CharSequence ends with any of the provided case-sensitive suffixes.</p>
      *
      * <pre>
      * StringUtils.endsWithAny(null, null)      = false
@@ -8162,20 +8233,23 @@ public class StringUtils {
      * StringUtils.endsWithAny("abcxyz", new String[] {""}) = true
      * StringUtils.endsWithAny("abcxyz", new String[] {"xyz"}) = true
      * StringUtils.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringUtils.endsWithAny("abcXYZ", "def", "XYZ") = true
+     * StringUtils.endsWithAny("abcXYZ", "def", "xyz") = false
      * </pre>
      *
-     * @param string  the CharSequence to check, may be null
-     * @param searchStrings the CharSequences to find, may be null or empty
-     * @return {@code true} if the CharSequence ends with any of the the prefixes, case insensitive, or
-     *  both {@code null}
+     * @param sequence  the CharSequence to check, may be null
+     * @param searchStrings the case-sensitive CharSequences to find, may be empty or contain {@code null}
+     * @see StringUtils#endsWith(CharSequence, CharSequence)
+     * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
+     *   the input {@code sequence} ends in any of the provided case-sensitive {@code searchStrings}.
      * @since 3.0
      */
-    public static boolean endsWithAny(final CharSequence string, final CharSequence... searchStrings) {
-        if (isEmpty(string) || ArrayUtils.isEmpty(searchStrings)) {
+    public static boolean endsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
+        if (isEmpty(sequence) || ArrayUtils.isEmpty(searchStrings)) {
             return false;
         }
         for (final CharSequence searchString : searchStrings) {
-            if (endsWith(string, searchString)) {
+            if (endsWith(sequence, searchString)) {
                 return true;
             }
         }
