@@ -25,6 +25,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.commons.lang3.text.WordUtils;
+import org.junit.Test;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -36,9 +39,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.PatternSyntaxException;
-
-import org.apache.commons.lang3.text.WordUtils;
-import org.junit.Test;
 
 /**
  * Unit tests {@link org.apache.commons.lang3.StringUtils}.
@@ -2952,5 +2952,27 @@ public class StringUtilsTest {
         assertEquals("''abcd''", StringUtils.wrap("'abcd'", "'"));
         assertEquals("'\"abcd\"'", StringUtils.wrap("\"abcd\"", "'"));
         assertEquals("\"'abcd'\"", StringUtils.wrap("'abcd'", "\""));
+    }
+
+    @Test
+    public void testEquals_twoStrings() throws Exception {
+        assertTrue(StringUtils.equals("", ""));
+        assertTrue(StringUtils.equals("a", "a"));
+        assertFalse(StringUtils.equals("a", "b"));
+    }
+
+    @Test
+    public void testEquals_nulls() throws Exception {
+        assertTrue(StringUtils.equals(null, null));
+        assertFalse(StringUtils.equals(null, new StringBuffer()));
+        assertFalse(StringUtils.equals(new StringBuffer("hello"), null));
+    }
+
+    @Test
+    public void testEquals_twoNonStrings() throws Exception {
+        assertTrue(StringUtils.equals(new StringBuffer(""), new StringBuffer("")));
+        assertTrue(StringUtils.equals(new StringBuffer("foo"), new StringBuilder("foo")));
+        assertFalse(StringUtils.equals(new StringBuffer("foo"), new StringBuffer("bar")));
+        assertFalse(StringUtils.equals(new StringBuilder("foo"), new StringBuilder("foobar")));
     }
 }
